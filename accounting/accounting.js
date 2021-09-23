@@ -176,8 +176,12 @@ const accounting = async function (budget) {
     // } else {
     //   to_earn = cost.amount / days_left
     // }
-    to_earn = cost.amount / days_left
-    cost.to_earn = to_earn
+    if (days_left != 0) {
+      to_earn = cost.amount / days_left
+      cost.to_earn = roundNumber(to_earn, 2)
+    } else {
+      cost.to_earn = cost.amount
+    }
   })
   // tot_costs.forEach(cost => console.log(cost))
 
@@ -191,7 +195,8 @@ const accounting = async function (budget) {
   for (let cost of tot_costs) {
     to_earn += cost.to_earn
   }
-  budget.to_earn = to_earn
+  budget.to_earn = roundNumber(to_earn, 2)
+  budget.total_costs = tot_costs
   return budget
 }
 

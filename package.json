@@ -1,0 +1,26 @@
+{
+  "name": "accounting",
+  "version": "0.0.1",
+  "description": "Accounting software",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Werewolf-Solutions/accounting.git"
+  },
+  "author": "Lorenzo Ghidoni",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Werewolf-Solutions/accounting/issues"
+  },
+  "homepage": "https://github.com/Werewolf-Solutions/accounting#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  },
+  "dependencies": {
+    "moment": "^2.29.1"
+  }
+}
