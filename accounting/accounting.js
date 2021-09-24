@@ -23,7 +23,8 @@ const accounting = async function (budget) {
   const {
     working_days,
     fixed_costs,
-    future_costs
+    future_costs,
+    bank_accounts,
   } = budget
   var net_worth = 0
   var tot_income = 0
@@ -110,7 +111,10 @@ const accounting = async function (budget) {
         return acc
       },{})
     }, future_costs
-  )  
+  )
+
+
+  /////////////////////// ---------------------------- do we need it??
   // clean all_future_costs from duplicates
   let uniq = {}
   let new_all_future_costs = []
@@ -131,6 +135,8 @@ const accounting = async function (budget) {
   // add new_all_future_costs to total_costs
   // Array.prototype.push.apply(total_costs, new_all_future_costs)
   // total_costs.sort((a, b) => (a.date > b.date) ? 1 : -1)
+  /////////////////////// -------------------------------------------
+
 
   // reduce total_costs by date
   const tot_costs = Array.from(
@@ -163,6 +169,9 @@ const accounting = async function (budget) {
   // console.log(`Net wealth: ${net_worth}.`)
   // console.log(`Liquidity: ${liquidity}.`)
   
+  /**
+   * Calculate days left and to_earn for each fixed cost
+   */
   // deduct each cost amount from liquidity
   // if liquidity > 0 => to_earn = 0 because you can cover your costs until that date
   // else liquidity < 0 => to_earn = cost.amount / days_left
@@ -183,6 +192,112 @@ const accounting = async function (budget) {
       cost.to_earn = cost.amount
     }
   })
+  // tot_costs.forEach(cost => console.log(cost))
+
+  /**
+   * Calculate days_left and to_earn for each future cost
+   */
+  
+  all_future_costs.forEach(cost => {
+    let now = moment().format("YYYY-MM-DD")
+    let days_left = daysLeft(now, cost.date, working_days)
+    cost.days_left = days_left
+    // if (liquidity > 0) {
+    //   liquidity -= cost.amount
+    //   to_earn = 0
+    // } else {
+    //   to_earn = cost.amount / days_left
+    // }
+    if (days_left != 0) {
+      to_earn = cost.amount / days_left
+      cost.to_earn = roundNumber(to_earn, 2)
+    } else {
+      cost.to_earn = cost.amount
+    }
+  })
+  // console.log('Future costs')
+  // all_future_costs.forEach(cost => console.log(cost))
+
+  /**
+   * add future costs to tot costs and delete duplicates
+   */
+
+  // add future costs to tot costs
+  for (let cost of all_future_costs) {
+    tot_costs.push(cost)
+  }
+
+  tot_costs.sort((a, b) => (a.date > b.date) ? 1 : -1)
+
+  // count function to see which indexes have same element(date)
+  function count(array, element){
+    var counts = []
+      for (i = 0; i < array.length; i++){
+        if (array[i].date === element) {  
+          counts.push(i)
+        }
+      }
+    return counts
+  }
+
+  // check each date of tot costs
+  let result
+  for (let cost of tot_costs) {
+    elm = count(tot_costs, cost.date)
+    if (elm.length >= 2) {
+      result = elm
+    }
+  }
+  
+  // add to earn and amount to same date
+  tot_costs[result[0]].to_earn += tot_costs[result[1]].to_earn
+  tot_costs[result[0]].amount += tot_costs[result[1]].amount
+
+  // delete one result (the one that is not being changed)
+  tot_costs.splice(result[1], 1)
+
+  // tot_costs.forEach(cost => console.log(cost))
+
+  // let prev_date
+  // for (let cost of tot_costs) {
+  //   console.log(prev_date, cost.date)
+  //   if (prev_date) {
+  //     if (prev_date == cost.date) {
+  //       console.log('same date, add amount and to earn')
+  //     }
+  //   } else if (!prev_date) {
+  //     prev_date = cost.date
+  //   }
+  // }
+
+  // put same date together
+  // var result = tot_costs.reduce((unique, o) => {
+  //   if(!unique.some(obj => obj.date == o.date)) {
+  //     unique.push(o)
+  //   }
+  //   return unique
+  // },[])
+  // console.log(result)
+
+  tot_costs.sort((a, b) => (a.date > b.date) ? 1 : -1)
+
+  /**
+   * Delete liquidity from tot_costs amount
+   */
+
+  for (let i = 0; i < tot_costs.length; i++) {
+    if (tot_bank_accounts >= tot_costs[i].amount) {
+      tot_bank_accounts = tot_bank_accounts - tot_costs[i].amount
+      tot_costs[i].amount = 0
+      tot_costs[i].to_earn = 0
+    } else {
+      tot_costs[i].amount = tot_costs[i].amount - tot_bank_accounts
+      tot_bank_accounts = 0
+      tot_costs[i].to_earn = tot_costs[i].amount / tot_costs[i].days_left
+    }
+  }
+
+  // console.log('Tot costs')
   // tot_costs.forEach(cost => console.log(cost))
 
   //////////////////// do we need this?

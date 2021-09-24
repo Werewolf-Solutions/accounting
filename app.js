@@ -59,7 +59,7 @@ let user = {
             notes: 'others',
         }],
         variable_costs: [{
-            amount: 30,
+            amount: 40,
             currency: 'USD',
             date: moment('2021-09-21').format('YYYY-MM-DD'),
             to: 'oooo',
@@ -67,7 +67,7 @@ let user = {
             from: 'cccc',
             notes: 'aaaa'
         },{
-            amount: 50,
+            amount: 70,
             currency: 'USD',
             date: moment('2021-09-19').format('YYYY-MM-DD'),
             to: 'oooo',
@@ -83,9 +83,49 @@ let user = {
             label: 'aaa',
             from: 'aaa',
             notes: 'aaa',
+        },{
+            amount: 60,
+            currency: 'USD',
+            date: moment('2021-10-02').format('YYYY-MM-DD'),
+            to: 'aaaa',
+            label: 'aaa',
+            from: 'aaa',
+            notes: 'aaa',
+        },{
+            amount: 40,
+            currency: 'USD',
+            date: moment('2021-10-02').format('YYYY-MM-DD'),
+            to: 'aaaa',
+            label: 'aaa',
+            from: 'aaa',
+            notes: 'aaa',
+        },{
+            amount: 40,
+            currency: 'USD',
+            date: moment('2021-10-01').format('YYYY-MM-DD'),
+            to: 'aaaa',
+            label: 'aaa',
+            from: 'aaa',
+            notes: 'aaa',
+        },{
+            amount: 60,
+            currency: 'USD',
+            date: moment('2021-10-06').format('YYYY-MM-DD'),
+            to: 'aaaa',
+            label: 'aaa',
+            from: 'aaa',
+            notes: 'aaa',
+        },{
+            amount: 60,
+            currency: 'USD',
+            date: moment('2021-10-10').format('YYYY-MM-DD'),
+            to: 'aaaa',
+            label: 'aaa',
+            from: 'aaa',
+            notes: 'aaa',
         }],
         incomes: [{
-            date: moment('2021-09-29').format('YYYY-MM-DD'),
+            date: moment('2021-09-23').format('YYYY-MM-DD'),
             amount: 50,
             currency: 'USD',
             from: 'aaa',
@@ -108,6 +148,6 @@ let user = {
 async function init() {
     let new_budget = await accounting(user.budgets[0])
     
-    console.log(new_budget.total_costs)
+    // console.log(new_budget)
 }
 init()
